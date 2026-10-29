@@ -96,13 +96,14 @@ def add_actions(bill, response):
 
 
 def add_subjects(bill, response):
-    # TODO: this xpath gets both 'subjects' and 'file codes'
-    # they both link to subjects on the site and seem to fit the definition of subject
+    # matches both the "File Code" and "Subjects" sections, which all link to the subject index
     for row in response.xpath(
-        '//a[contains(@href, "/Legislation/SubjectIndex/annotac")]/text()'
+        '//a[contains(@href, "/Legislation/SubjectIndex/")]/text()'
     ).getall():
-        # row[0] is only the first character; kept to match os-update output
-        bill.add_subject(row[0])
+        # drop cross-references, e.g. "Hunting -see also- Trapping"
+        subject = re.split(r"\s*-\s*see also-", row)[0].strip()
+        if subject and subject not in bill.subject:
+            bill.add_subject(subject)
 
 
 def add_sponsors(bill, response):
