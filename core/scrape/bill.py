@@ -1,5 +1,5 @@
 import warnings
-from core.utils import _make_pseudo_id
+from core.utils import _make_pseudo_id, transformers
 from .popolo import pseudo_organization
 from .base import BaseModel, SourceMixin, AssociatedLinkMixin, cleanup_list
 from .schemas.bill import schema
@@ -90,6 +90,9 @@ class Bill(SourceMixin, AssociatedLinkMixin, BaseModel):
         )
 
     def add_related_bill(self, identifier, legislative_session, relation_type):
+        # Normalize identifier before saving
+        identifier = transformers.fix_bill_id(identifier)
+
         # will we need jurisdiction, organization?
         self.related_bills.append(
             {
@@ -121,7 +124,10 @@ class Bill(SourceMixin, AssociatedLinkMixin, BaseModel):
         # overwrite the id that exists
         if entity_type:
             if not entity_id:
-                entity_id = _make_pseudo_id(name=name)
+                if chamber is not None:
+                    entity_id = _make_pseudo_id(name=name, chamber=chamber)
+                else:
+                    entity_id = _make_pseudo_id(name=name)
             sp[entity_type + "_id"] = entity_id
         if sp in self.sponsorships:
             warnings.warn(f"duplicate sponsor {sp}", RuntimeWarning)

@@ -8,7 +8,9 @@ import os
 
 from deepdiff import DeepDiff
 
-KEYS_TO_IGNORE = ["_id"]
+# jurisdiction and scraped_at are save-time metadata added by newer openstates-core,
+# not present in this repo's copy of core
+KEYS_TO_IGNORE = ["_id", "jurisdiction", "scraped_at"]
 logging.getLogger().setLevel(logging.DEBUG)
 
 
@@ -37,7 +39,13 @@ def cli_opts():
 
 
 def strip_ignored_keys(item):
-    return dict([(key, val) for key, val in item.items() if key not in KEYS_TO_IGNORE])
+    item = dict([(key, val) for key, val in item.items() if key not in KEYS_TO_IGNORE])
+    # newer openstates-core also generates an ocd-bill-* identifier at save time
+    if "other_identifiers" in item:
+        item["other_identifiers"] = [
+            i for i in item["other_identifiers"] if not i["identifier"].startswith("ocd-bill-")
+        ]
+    return item
 
 
 def load_scrapy_json(filepath):
@@ -77,7 +85,11 @@ def main():
     args = cli_opts()
     logging.info(f"About to compare data in {args.scrapy_path} to {args.os_dir_path}")
 
-    scrapy_data = load_scrapy_json(args.scrapy_path)
+    if os.path.isdir(args.scrapy_path):
+        # SaveLocalPipeline output: one JSON file per entity, same layout as os-update
+        scrapy_data = load_os_update_json_files_from_directory(args.scrapy_path, args.file_prefix)
+    else:
+        scrapy_data = load_scrapy_json(args.scrapy_path)
     os_scrape_data = load_os_update_json_files_from_directory(args.os_dir_path, args.file_prefix)
 
     if len(scrapy_data) != len(os_scrape_data):
@@ -98,7 +110,7 @@ def main():
             )
             if diff:
                 logging.error(f"Differences found for {os_item['identifier']}")
-                logging.error(json.dumps(diff, indent=4))
+                logging.error(diff.to_json(indent=4))
 
     logging.info(f"complete! checked {len(os_scrape_data)} items")
 
