@@ -12,7 +12,10 @@ from .state import Maryland
 # Ported from openstates-scrapers scrapers/md/bills.py; selectors kept identical so
 # output can be diffed 1:1 against os-update.
 
+# stored URLs keep http:// to match os-update; requests go straight to https://
+# since the site 301s every http:// request and each redirect costs a DOWNLOAD_DELAY
 BASE_URL = "http://mgaleg.maryland.gov/mgawebsite/"
+HTTPS_BASE_URL = BASE_URL.replace("http://", "https://")
 CHAMBERS = {"upper": "senate", "lower": "house"}
 
 classifiers = {
@@ -173,7 +176,7 @@ class BillsSpider(BaseSpider):
             # despite only showing one page to the browser,
             # all the bills are conveniently in the markup
             yield Request(
-                url=f"{BASE_URL}Legislation/Index/{CHAMBERS[chamber]}?ys={session_slug}",
+                url=f"{HTTPS_BASE_URL}Legislation/Index/{CHAMBERS[chamber]}?ys={session_slug}",
                 callback=self.parse_bill_list,
                 cb_kwargs={"chamber": chamber},
                 meta={"is_scout": True},
@@ -188,7 +191,7 @@ class BillsSpider(BaseSpider):
             )
             yield BillStubItem(bill_stub)
             yield Request(
-                url=url,
+                url=url.replace(BASE_URL, HTTPS_BASE_URL),
                 callback=self.parse_bill,
                 cb_kwargs={"bill_stub": bill_stub},
             )
