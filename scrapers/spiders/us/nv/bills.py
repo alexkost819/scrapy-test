@@ -10,7 +10,7 @@ from dataclasses import dataclass
 
 from scrapy import Request
 
-from core.scrape import Bill
+from openstates.scrape import Bill
 from scrapers.spiders import BaseSpider
 from scrapers.items import BillStub, BillStubItem, bill_stub_schema, Chamber, BillItem
 from scrapers.utils import (

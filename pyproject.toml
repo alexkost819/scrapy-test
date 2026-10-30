@@ -6,14 +6,12 @@ authors = ["Jesse Mortenson <jesse@pluralpolicy.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.13"
 scrapy = "^2.11.0"
-boto3 = "^1.28.78"
-jsonschema = "^4.19.2"
-scrapelib = "^2.2.0"
-pytz = "^2023.3.post1"
+pytz = "^2024.1"
 deepdiff = "^6.7.1"
 google-cloud-storage = "^2.16.0"
+openstates = { path = "../openstates-core", develop = true }
 
 [build-system]
 requires = ["poetry-core"]

@@ -11,7 +11,7 @@ from zipfile import ZipFile
 from scrapy import Request, Selector
 
 from .state import Missouri
-from core.scrape import Bill, VoteEvent
+from openstates.scrape import Bill, VoteEvent
 from scrapers.spiders import BaseSpider
 from scrapers.items import Chamber, BillItem, VoteEventItem
 from scrapers.utils import (

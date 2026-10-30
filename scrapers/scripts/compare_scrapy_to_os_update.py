@@ -8,9 +8,8 @@ import os
 
 from deepdiff import DeepDiff
 
-# jurisdiction and scraped_at are save-time metadata added by newer openstates-core,
-# not present in this repo's copy of core
-KEYS_TO_IGNORE = ["_id", "jurisdiction", "scraped_at"]
+# scraped_at is the save time, so it always differs between runs
+KEYS_TO_IGNORE = ["_id", "scraped_at"]
 logging.getLogger().setLevel(logging.DEBUG)
 
 
@@ -39,13 +38,7 @@ def cli_opts():
 
 
 def strip_ignored_keys(item):
-    item = dict([(key, val) for key, val in item.items() if key not in KEYS_TO_IGNORE])
-    # newer openstates-core also generates an ocd-bill-* identifier at save time
-    if "other_identifiers" in item:
-        item["other_identifiers"] = [
-            i for i in item["other_identifiers"] if not i["identifier"].startswith("ocd-bill-")
-        ]
-    return item
+    return dict([(key, val) for key, val in item.items() if key not in KEYS_TO_IGNORE])
 
 
 def load_scrapy_json(filepath):

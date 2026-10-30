@@ -4,7 +4,7 @@ from urllib.parse import urljoin
 
 from scrapy import Request
 
-from core.scrape import Bill
+from openstates.scrape import Bill
 from scrapers.spiders import BaseSpider
 from scrapers.items import BillStub, BillStubItem, BillItem
 from .state import Maryland

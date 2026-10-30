@@ -1,4 +1,4 @@
-from core.scrape import State
+from openstates.scrape import State
 
 
 class Missouri(State):

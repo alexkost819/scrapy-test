@@ -2,8 +2,8 @@ import inspect
 from typing import Any, Union
 from dataclasses import dataclass
 from enum import Enum
-from core.scrape import Bill, State, Organization, VoteEvent
-from core.scrape.base import BaseModel
+from openstates.scrape import Bill, State, Organization, VoteEvent
+from openstates.scrape.base import BaseModel
 
 
 class Chamber(str, Enum):

@@ -1,5 +1,5 @@
 from scrapers.utils import url_xpath
-from core.scrape import State
+from openstates.scrape import State
 
 
 class Nevada(State):

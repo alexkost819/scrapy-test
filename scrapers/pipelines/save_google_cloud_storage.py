@@ -32,7 +32,7 @@ class SaveGoogleCloudStoragePipeline:
     def save_object(self, obj, spider):
         clean_whitespace(obj)
 
-        obj.pre_save(spider.jurisdiction.jurisdiction_id)
+        obj.pre_save(spider.jurisdiction)
 
         filename = f"{obj._type}_{obj._id}.json".replace("/", "-")
         jurisdiction_string = self.jurisdiction.division_id.replace("ocd-division/", "")

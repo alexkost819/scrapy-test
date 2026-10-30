@@ -225,10 +225,9 @@ Other evaluation criteria:
 
 ### Problems
 
-* The `spatula` library specifies an older version of the `attrs` package as a dependency. `scrapy` also has `attrs` as
-  a dependency. These versions conflict. And since `openstates` has `spatula` as a dependency, we currently cannot
-  add `openstates` as a dependency to this project! To try to quickly work around this, I copied a bunch of library code
-  out of the `openstates-core` repo and into the `core` package within this repo. This is a very temporary solution.
+* The `spatula` library pins `attrs<21`, which conflicts with `scrapy` (via Twisted). `openstates` now makes
+  `spatula` an optional extra, so this project depends on `openstates` directly (currently as a local path
+  dependency on `../openstates-core`). Don't install `openstates[spatula]` here.
 * Scraper is not fully ported
 
 ### Useful concepts

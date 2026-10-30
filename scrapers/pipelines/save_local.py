@@ -39,7 +39,7 @@ class SaveLocalPipeline:
 
         pre_save_method = getattr(obj, "pre_save", None)
         if callable(pre_save_method):
-            obj.pre_save(spider.jurisdiction.jurisdiction_id)
+            obj.pre_save(spider.jurisdiction)
 
         filename = f"{obj._type}_{obj._id}.json".replace("/", "-")
         file_path = os.path.join(self.datadir, filename)
